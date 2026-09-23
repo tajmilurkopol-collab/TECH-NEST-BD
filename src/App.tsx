@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { TrustMarquee } from './components/TrustMarquee';
@@ -12,23 +12,50 @@ import { ITServices } from './components/ITServices';
 import { HowItWorks } from './components/HowItWorks';
 import { Footer } from './components/Footer';
 import { ProductModal } from './components/ProductModal';
+import { ProductDetailPage } from './components/ProductDetailPage';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { SearchModal } from './components/SearchModal';
-import { AdminCatalogueModal } from './components/AdminCatalogueModal';
 import { ConsultationModal } from './components/ConsultationModal';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
 
-import { products as initialProducts } from './data/products';
-import { categories } from './data/categories';
-import { industries } from './data/industries';
-import { bundles } from './data/bundles';
-import { itServices } from './data/services';
-import { Product, Plan, CartItem, CategoryId, Language, IndustrySolution, Bundle, ITServiceItem } from './types';
+// Admin CMS imports
+import { AdminLogin } from './components/admin/AdminLogin';
+import { AdminPortal } from './components/admin/AdminPortal';
+
+import {
+  Product,
+  Plan,
+  CartItem,
+  CategoryId,
+  Language,
+  IndustrySolution,
+  Bundle,
+  ITServiceItem,
+  User,
+  SiteSettings,
+} from './types';
+import { storageService, subscribeToStorageChanges } from './utils/storageService';
 
 export function App() {
   const [language, setLanguage] = useState<Language>('en');
-  const [productsList, setProductsList] = useState<Product[]>(initialProducts);
+
+  // Core Data Layer from storageService
+  const [productsList, setProductsList] = useState<Product[]>(() => storageService.getProducts());
+  const [categoriesList, setCategoriesList] = useState(() => storageService.getCategories());
+  const [industriesList, setIndustriesList] = useState(() => storageService.getIndustries());
+  const [bundlesList, setBundlesList] = useState(() => storageService.getBundles());
+  const [servicesList, setServicesList] = useState(() => storageService.getServices());
+  const [settings, setSettings] = useState<SiteSettings>(() => storageService.getSettings());
+
+  // Current logged in admin user
+  const [currentUser, setCurrentUser] = useState<User | null>(() => storageService.getCurrentUser());
+
+  // Routing / View Mode: 'storefront' | 'admin' | 'admin-login' | 'product-detail'
+  const [viewMode, setViewMode] = useState<'storefront' | 'admin' | 'admin-login' | 'product-detail'>('storefront');
+  const [dedicatedProduct, setDedicatedProduct] = useState<Product | null>(null);
+
+  // Filters & Selected Modals
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -39,12 +66,56 @@ export function App() {
 
   // Modals
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [consultationIndustry, setConsultationIndustry] = useState<IndustrySolution | null>(null);
 
+  // Initial URL check (e.g. /admin or /product/chatgpt)
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      const path = window.location.pathname;
+
+      if (path.startsWith('/admin')) {
+        const user = storageService.getCurrentUser();
+        if (user) {
+          setViewMode('admin');
+        } else {
+          setViewMode('admin-login');
+        }
+      } else if (path.startsWith('/product/')) {
+        const slug = path.replace('/product/', '').trim();
+        const found = storageService.getProductBySlug(slug);
+        if (found) {
+          setDedicatedProduct(found);
+          setViewMode('product-detail');
+        } else {
+          setViewMode('storefront');
+        }
+      } else {
+        setViewMode('storefront');
+      }
+    };
+
+    handleUrlRoute();
+    window.addEventListener('popstate', handleUrlRoute);
+    return () => window.removeEventListener('popstate', handleUrlRoute);
+  }, []);
+
+  // Subscribe to storage modifications in real-time
+  useEffect(() => {
+    const unsubscribe = subscribeToStorageChanges(() => {
+      setProductsList(storageService.getProducts());
+      setCategoriesList(storageService.getCategories());
+      setIndustriesList(storageService.getIndustries());
+      setBundlesList(storageService.getBundles());
+      setServicesList(storageService.getServices());
+      setSettings(storageService.getSettings());
+      setCurrentUser(storageService.getCurrentUser());
+    });
+    return unsubscribe;
+  }, []);
+
   // Keyboard shortcut for search (⌘K or Ctrl+K)
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
@@ -87,12 +158,12 @@ export function App() {
   };
 
   const handleSelectBundle = (bundle: Bundle) => {
-    // Add primary constituent tools
-    const matched = productsList.filter((p) => bundle.toolsIncluded.some((t) => p.name.includes(t) || t.includes(p.name)));
+    const matched = productsList.filter((p) =>
+      bundle.toolsIncluded.some((t) => p.name.includes(t) || t.includes(p.name))
+    );
     if (matched.length > 0) {
       matched.forEach((p) => handleAddToCart(p));
-    } else {
-      // Add first matching
+    } else if (productsList.length > 0) {
       handleAddToCart(productsList[0]);
     }
     setIsCartOpen(true);
@@ -125,21 +196,28 @@ export function App() {
     setCartItems([]);
   };
 
-  // Navigation smoothly scroll to target ID
+  // Smooth scroll
   const handleNavigateSection = (sectionId: string) => {
+    if (viewMode !== 'storefront') {
+      setViewMode('storefront');
+      window.history.pushState({}, '', '/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return;
+    }
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Handle category selection from explorer or editorial
   const handleCategorySelection = (catId: CategoryId | 'all') => {
     setSelectedCategory(catId);
     handleNavigateSection('marketplace');
   };
 
-  // Open consultation modal
   const handleOpenConsultation = (industry: IndustrySolution) => {
     setConsultationIndustry(industry);
     setIsConsultationOpen(true);
@@ -147,13 +225,13 @@ export function App() {
 
   const handleServiceConsultation = (srv: ITServiceItem) => {
     const mockIndustry: IndustrySolution = {
-      id: 'construction',
+      id: 'it-service',
       name: srv.title,
       nameBn: srv.titleBn,
       tagline: srv.category,
       taglineBn: srv.categoryBn,
-      headline: `Implementation & Consultation for ${srv.title}`,
-      headlineBn: `${srv.titleBn} সংক্রান্ত কনসালটেশন`,
+      headline: `Implementation & SLA for ${srv.title}`,
+      headlineBn: `${srv.titleBn} বাস্তবায়ন ও কনসালটেশন`,
       heroBadge: 'Enterprise IT Service',
       heroBadgeBn: 'এন্টারপ্রাইজ আইটি সেবা',
       accentColor: '#2563EB',
@@ -163,29 +241,149 @@ export function App() {
       keyBenefits: [],
       demoText: 'Request Discovery Call',
       demoTextBn: 'কনসালটেশন বুক করুন',
-      phone: '01969-101010',
+      phone: settings.supportPhone || '+880 1969-101010',
     };
     setConsultationIndustry(mockIndustry);
     setIsConsultationOpen(true);
   };
 
-  // Admin catalogue simulations
-  const handleUpdateProductStatus = (id: string, status: 'AVAILABLE' | 'COMING SOON' | 'REQUEST QUOTE') => {
-    setProductsList((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, availabilityStatus: status } : p))
-    );
+  // Navigation to Admin
+  const handleOpenAdminFromUI = () => {
+    const user = storageService.getCurrentUser();
+    if (user) {
+      setViewMode('admin');
+      window.history.pushState({}, '', '/admin/dashboard');
+    } else {
+      setViewMode('admin-login');
+      window.history.pushState({}, '', '/admin/login');
+    }
   };
 
-  const handleUpdateProductPrice = (id: string, newPrice: number) => {
-    setProductsList((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, marketPrice: newPrice } : p))
-    );
+  const handleAdminLoginSuccess = (user: User) => {
+    setCurrentUser(user);
+    setViewMode('admin');
+    window.history.pushState({}, '', '/admin/dashboard');
+  };
+
+  const handleAdminLogout = () => {
+    storageService.logoutCurrentUser();
+    setCurrentUser(null);
+    setViewMode('storefront');
+    window.history.pushState({}, '', '/');
+  };
+
+  const handleReturnToStorefront = () => {
+    setViewMode('storefront');
+    setDedicatedProduct(null);
+    window.history.pushState({}, '', '/');
+  };
+
+  const handleOpenDedicatedProductPage = (prod: Product) => {
+    setDedicatedProduct(prod);
+    setViewMode('product-detail');
+    window.history.pushState({}, '', `/product/${prod.slug || prod.id}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const totalCartUnits = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  // ==========================================
+  // VIEW: ADMIN PORTAL
+  // ==========================================
+  if (viewMode === 'admin' && currentUser) {
+    return (
+      <AdminPortal
+        currentUser={currentUser}
+        onLogout={handleAdminLogout}
+        onViewStorefront={handleReturnToStorefront}
+        onViewProductLive={handleOpenDedicatedProductPage}
+      />
+    );
+  }
+
+  // ==========================================
+  // VIEW: ADMIN LOGIN
+  // ==========================================
+  if (viewMode === 'admin-login') {
+    return (
+      <AdminLogin
+        onLoginSuccess={handleAdminLoginSuccess}
+        onBackToStore={handleReturnToStorefront}
+      />
+    );
+  }
+
+  // ==========================================
+  // VIEW: DEDICATED PRODUCT DETAIL PAGE
+  // ==========================================
+  if (viewMode === 'product-detail' && dedicatedProduct) {
+    return (
+      <div className={`min-h-screen bg-[#050B16] text-slate-100 flex flex-col font-sans ${language === 'bn' ? 'font-bn' : ''}`}>
+        <Navbar
+          language={language}
+          onLanguageChange={setLanguage}
+          cartCount={totalCartUnits}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenAdmin={handleOpenAdminFromUI}
+          onNavigateSection={handleNavigateSection}
+        />
+
+        <main className="flex-1">
+          <ProductDetailPage
+            product={dedicatedProduct}
+            language={language}
+            onBack={handleReturnToStorefront}
+            onAddToCart={(prod, plan) => handleAddToCart(prod, plan)}
+            onSelectProduct={(prod: Product) => {
+              setDedicatedProduct(prod);
+              window.history.pushState({}, '', `/product/${prod.slug || prod.id}`);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onSelectBundle={handleSelectBundle}
+          />
+        </main>
+
+        <Footer
+          language={language}
+          onNavigateSection={handleNavigateSection}
+          onOpenAdmin={handleOpenAdminFromUI}
+        />
+
+        <CartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+          language={language}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveCartItem}
+          onClearCart={() => setCartItems([])}
+          onProceedCheckout={handleProceedCheckout}
+        />
+
+        <CheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          cartItems={cartItems}
+          language={language}
+          onOrderSuccess={handleOrderSuccess}
+        />
+      </div>
+    );
+  }
+
+  // ==========================================
+  // VIEW: PUBLIC STOREFRONT
+  // ==========================================
   return (
     <div className={`min-h-screen bg-[#050B16] text-slate-100 flex flex-col font-sans ${language === 'bn' ? 'font-bn' : ''}`}>
+      {/* Top Global Announcement Banner if enabled in Settings */}
+      {settings.announcementActive && settings.announcementBanner && (
+        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-700 text-white py-1.5 px-4 text-center text-xs font-semibold tracking-wide border-b border-blue-600/40">
+          <span>{settings.announcementBanner}</span>
+        </div>
+      )}
+
       {/* 3-Zone Top Bar */}
       <Navbar
         language={language}
@@ -193,7 +391,7 @@ export function App() {
         cartCount={totalCartUnits}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenAdmin={handleOpenAdminFromUI}
         onNavigateSection={handleNavigateSection}
       />
 
@@ -218,7 +416,7 @@ export function App() {
 
         {/* "WHAT DO YOU NEED TODAY?" Category Explorer */}
         <CategoryExplorer
-          categories={categories}
+          categories={categoriesList}
           language={language}
           onSelectCategory={(catId) => handleCategorySelection(catId)}
         />
@@ -231,11 +429,12 @@ export function App() {
           onCategoryChange={setSelectedCategory}
           onSelectProduct={(product) => setSelectedProduct(product)}
           onAddToCart={(product) => handleAddToCart(product)}
+          onOpenDedicatedPage={handleOpenDedicatedProductPage}
         />
 
         {/* Industry Solutions (Construction, Garments, Poultry, Real Estate) */}
         <IndustryShowcase
-          industries={industries}
+          industries={industriesList}
           language={language}
           onOpenConsultationModal={handleOpenConsultation}
         />
@@ -250,14 +449,14 @@ export function App() {
 
         {/* "BUILT FOR THE WAY YOU WORK" Bundles & Single vs Bundle Advantage */}
         <BundleMarketplace
-          bundles={bundles}
+          bundles={bundlesList}
           language={language}
           onSelectBundle={handleSelectBundle}
         />
 
         {/* Enterprise IT Services & Solutions */}
         <ITServices
-          services={itServices}
+          services={servicesList}
           language={language}
           onConsultationRequest={handleServiceConsultation}
         />
@@ -266,10 +465,11 @@ export function App() {
         <HowItWorks language={language} />
       </main>
 
-      {/* Enterprise Footer */}
+      {/* Enterprise Footer with Legal & Trademark Notice */}
       <Footer
         language={language}
         onNavigateSection={handleNavigateSection}
+        onOpenAdmin={handleOpenAdminFromUI}
       />
 
       {/* Floating WhatsApp Action and Mobile Sticky Bar */}
@@ -285,6 +485,7 @@ export function App() {
           language={language}
           onClose={() => setSelectedProduct(null)}
           onAddToCart={handleAddToCart}
+          onOpenDedicatedPage={handleOpenDedicatedProductPage}
         />
       )}
 
@@ -318,17 +519,6 @@ export function App() {
           products={productsList}
           language={language}
           onSelectProduct={(product) => setSelectedProduct(product)}
-        />
-      )}
-
-      {isAdminOpen && (
-        <AdminCatalogueModal
-          isOpen={isAdminOpen}
-          onClose={() => setIsAdminOpen(false)}
-          products={productsList}
-          language={language}
-          onUpdateProductStatus={handleUpdateProductStatus}
-          onUpdateProductPrice={handleUpdateProductPrice}
         />
       )}
 

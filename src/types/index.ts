@@ -8,7 +8,8 @@ export type CategoryId =
   | 'developer' 
   | 'apis' 
   | 'industry' 
-  | 'services';
+  | 'services'
+  | string;
 
 export type IndustryId =
   | 'construction'
@@ -18,15 +19,18 @@ export type IndustryId =
   | 'manufacturing'
   | 'retail'
   | 'healthcare'
-  | 'education';
+  | 'education'
+  | string;
 
 export type AccessType = 'Personal' | 'Shared' | 'Team' | 'Business' | 'API' | 'Dedicated';
 
-export type BillingPeriod = 'Monthly' | '3 Months' | '6 Months' | 'Annual' | 'One-Time' | 'Pay As You Go';
+export type BillingPeriod = 'Monthly' | '3 Months' | '6 Months' | 'Annual' | 'One-Time' | 'Pay As You Go' | 'Custom';
 
 export type ProductBadge = 'BEST SELLER' | 'TRENDING' | 'NEW' | 'POPULAR' | 'BUSINESS' | 'FOR CREATORS' | 'FOR TEAMS' | 'LIMITED OFFER';
 
 export type StockStatus = 'AVAILABLE' | 'COMING SOON' | 'REQUEST QUOTE';
+
+export type ProductPublishStatus = 'published' | 'draft' | 'archived';
 
 export type SourceType = 'OFFICIAL' | 'AUTHORIZED_RESELLER' | 'MARKETPLACE' | 'AFFILIATE' | 'DEMO';
 
@@ -51,8 +55,16 @@ export type Plan = ProductPlan;
 
 export interface Product {
   id: string;
+  slug?: string;
   name: string;
+  nameBn?: string;
   brand: string;
+  brandBn?: string;
+  logoUrl?: string;
+  coverImageUrl?: string;
+  thumbnailUrl?: string;
+  gallery?: string[];
+  brandLogoUrl?: string;
   category: CategoryId;
   subcategory: string;
   subcategoryBn: string;
@@ -61,19 +73,26 @@ export interface Product {
   descriptionBn: string;
   shortDescription: string;
   shortDescriptionBn: string;
-  iconName: string;
+  longDescription?: string;
+  longDescriptionBn?: string;
+  iconName?: string;
   accentColor: string;
   officialWebsite?: string;
+  officialProductPage?: string;
   officialPrice?: number;
   marketPrice: number;
+  salePrice?: number;
   currency: 'BDT';
   billingPeriod: BillingPeriod;
   accessType: AccessType;
   features: string[];
   featuresBn: string[];
+  useCases?: string[];
+  useCasesBn?: string[];
   badge?: ProductBadge;
   stockStatus: StockStatus;
   availabilityStatus?: StockStatus;
+  status?: ProductPublishStatus;
   supportPeriod: string;
   supportPeriodBn: string;
   lastVerified: string;
@@ -89,6 +108,12 @@ export interface Product {
   whoFor?: string;
   whoForBn?: string;
   isFeatured?: boolean;
+  seoTitle?: string;
+  seoTitleBn?: string;
+  seoDescription?: string;
+  seoDescriptionBn?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Category {
@@ -103,6 +128,8 @@ export interface Category {
   accentColor: string;
   toolCount: number;
   sampleTools: string[];
+  imageUrl?: string;
+  order?: number;
 }
 
 export interface IndustrySolution {
@@ -134,6 +161,8 @@ export interface IndustrySolution {
   demoText: string;
   demoTextBn: string;
   phone: string;
+  imageUrl?: string;
+  icon?: string;
 }
 
 export interface Bundle {
@@ -153,6 +182,7 @@ export interface Bundle {
   accentColor: string;
   features: string[];
   featuresBn: string[];
+  status?: ProductPublishStatus;
 }
 
 export interface ITServiceItem {
@@ -176,4 +206,134 @@ export interface CartItem {
   product: Product;
   selectedPlan: ProductPlan;
   quantity: number;
+}
+
+export type OrderStatus = 'new' | 'contacted' | 'pending' | 'confirmed' | 'processing' | 'completed' | 'cancelled';
+export type PaymentStatus = 'unpaid' | 'paid' | 'refunded' | 'pending';
+export type PaymentMethod = 'bkash' | 'nagad' | 'rocket' | 'bank' | 'cash';
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  customerCompany?: string;
+  productNames: string[];
+  items: {
+    productId: string;
+    productName: string;
+    planId: string;
+    planName: string;
+    price: number;
+    quantity: number;
+  }[];
+  totalAmount: number;
+  discount: number;
+  netAmount: number;
+  currency: 'BDT';
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  status: OrderStatus;
+  trxId?: string;
+  notes?: string;
+  orderSource: 'direct_checkout' | 'whatsapp' | 'admin';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company?: string;
+  totalOrders: number;
+  totalSpend: number;
+  lastOrderDate: string;
+  status: 'active' | 'inactive';
+}
+
+export type MediaAssetType = 'logo' | 'cover' | 'gallery' | 'brand' | 'category' | 'banner';
+
+export interface MediaItem {
+  id: string;
+  filename: string;
+  url: string;
+  type: MediaAssetType;
+  dimensions?: string;
+  sizeBytes?: number;
+  usedBy: string[];
+  altText: string;
+  uploadedAt: string;
+}
+
+export type UserRole = 
+  | 'Super Admin' 
+  | 'Administrator' 
+  | 'Product Manager' 
+  | 'Content Editor' 
+  | 'Order Manager' 
+  | 'Support' 
+  | 'Viewer';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  avatarUrl?: string;
+  status: 'active' | 'suspended';
+  lastLogin?: string;
+  createdAt: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  userId?: string;
+  userName: string;
+  userEmail: string;
+  action: string;
+  module: string;
+  recordId?: string;
+  recordName?: string;
+  details: string;
+  timestamp: string;
+}
+
+export interface SiteSettings {
+  whatsappNumber: string;
+  supportPhone: string;
+  supportEmail: string;
+  officeAddress: string;
+  officeHours: string;
+  currency: 'BDT';
+  siteTitle: string;
+  siteTitleBn: string;
+  tagline: string;
+  taglineBn: string;
+  announcementBanner: string;
+  announcementActive: boolean;
+  facebookUrl?: string;
+  whatsappDeskActive: boolean;
+  maintenanceMode: boolean;
+  legalDisclaimer: string;
+  legalDisclaimerBn: string;
+}
+
+export interface HomepageContent {
+  heroEyebrow: string;
+  heroEyebrowBn: string;
+  heroLine1: string;
+  heroLine1Bn: string;
+  heroLine2: string;
+  heroLine2Bn: string;
+  heroHighlight: string;
+  heroHighlightBn: string;
+  heroSub: string;
+  heroSubBn: string;
+  heroExploreCta: string;
+  heroExploreCtaBn: string;
+  heroStackCta: string;
+  heroStackCtaBn: string;
 }

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <rect width="24" height="24" rx="5" fill="url(#canva-bg)"/>
+  <path d="M12.5 6.5C8.8 6.5 6.2 9.2 6.2 12.8C6.2 16.5 8.9 18.2 11.8 18.2C14.2 18.2 16.1 17.1 17.2 15.5L15.3 14.2C14.5 15.2 13.3 16 11.8 16C9.9 16 8.5 14.8 8.4 12.8H17.8C17.9 12.5 17.9 12 17.9 11.6C17.9 8.5 15.8 6.5 12.5 6.5ZM8.5 11.2C8.8 9.5 10.1 8.3 12.4 8.3C14.6 8.3 15.6 9.6 15.7 11.2H8.5Z" fill="#FFFFFF"/>
+  <defs>
+    <linearGradient id="canva-bg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00C4CC"/>
+      <stop offset="1" stop-color="#7D2AE8"/>
+    </linearGradient>
+  </defs>
+</svg>

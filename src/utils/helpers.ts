@@ -1,13 +1,14 @@
 import { Language } from '../types';
+import { storageService } from './storageService';
 
 export function formatBDT(amount: number, lang: Language = 'en'): string {
   if (lang === 'bn') {
     const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    const formattedNum = amount.toLocaleString('en-US');
+    const formattedNum = (amount || 0).toLocaleString('en-US');
     const bnNum = formattedNum.replace(/\d/g, (d) => bengaliDigits[parseInt(d, 10)]);
     return `৳${bnNum}`;
   }
-  return `৳${amount.toLocaleString('en-US')}`;
+  return `৳${(amount || 0).toLocaleString('en-US')}`;
 }
 
 export function generateWhatsAppLink(params: {
@@ -16,20 +17,40 @@ export function generateWhatsAppLink(params: {
   price?: number;
   phone?: string;
   lang?: Language;
+  orderId?: string;
+  customerName?: string;
   customMessage?: string;
 }): string {
-  const targetPhone = params.phone || '8801969101010'; // Client phone format
+  const settings = storageService.getSettings();
+  // Clean phone number (strip spaces, dashes, plus)
+  const rawPhone = params.phone || settings.whatsappNumber || '8801969101010';
+  const cleanPhone = rawPhone.replace(/\D/g, '');
+
   let text = '';
 
   if (params.customMessage) {
     text = params.customMessage;
   } else if (params.productName) {
-    const priceStr = params.price ? ` (${formatBDT(params.price, params.lang || 'en')})` : '';
-    const planStr = params.planName ? ` - ${params.planName}` : '';
-    text = `Hello Kyrops Digital, I would like to order: ${params.productName}${planStr}${priceStr}. Please provide activation details and payment instructions.`;
+    const orderId = params.orderId || `TNB-WA${Math.floor(1000 + Math.random() * 9000)}`;
+    const priceStr = params.price ? formatBDT(params.price, params.lang || 'en') : 'Contact for Quote';
+    const planStr = params.planName || 'Standard Access';
+    const customerStr = params.customerName ? `\nCustomer: ${params.customerName}` : '';
+
+    text = `Hello TECH NEST BD,
+I would like to order:
+
+Product: ${params.productName}
+Plan: ${planStr}
+Price: ${priceStr}
+Order ID: ${orderId}${customerStr}
+
+Please provide the next steps.`;
   } else {
-    text = `Hello Kyrops Digital, I would like to inquire about digital tools and enterprise software solutions for my business in Bangladesh.`;
+    text = `Hello TECH NEST BD,
+I would like to inquire about digital tools and enterprise AI solutions from your marketplace.
+
+Please provide available options and current BDT rates.`;
   }
 
-  return `https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }

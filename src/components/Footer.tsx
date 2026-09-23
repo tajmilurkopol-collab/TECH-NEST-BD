@@ -1,19 +1,23 @@
 import React from 'react';
-import { MapPin, Phone, Mail, ShieldCheck, Heart, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Mail, ShieldCheck, Heart, ExternalLink, Lock } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../data/i18n';
 import { TechNestLogo } from './TechNestLogo';
+import { storageService } from '../utils/storageService';
 
 interface FooterProps {
   language: Language;
   onNavigateSection: (sectionId: string) => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   language,
   onNavigateSection,
+  onOpenAdmin,
 }) => {
   const t = translations[language];
+  const settings = storageService.getSettings();
 
   return (
     <footer className="bg-[#030712] border-t border-slate-900 text-slate-400 text-xs">
@@ -32,18 +36,18 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="space-y-2 pt-2 text-slate-300">
               <div className="flex items-center gap-2.5">
                 <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Dhaka, Bangladesh</span>
+                <span>{settings.officeAddress || 'Dhaka, Bangladesh'}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-blue-400 shrink-0" />
-                <a href="tel:01969101010" className="hover:text-white transition-colors">
-                  +880 1969-101010
+                <a href={`tel:${settings.supportPhone || '01969101010'}`} className="hover:text-white transition-colors">
+                  {settings.supportPhone || '+880 1969-101010'}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-indigo-400 shrink-0" />
-                <a href="mailto:tajmilur.kopol@gmail.com" className="hover:text-white transition-colors">
-                  tajmilur.kopol@gmail.com
+                <a href={`mailto:${settings.supportEmail || 'tajmilur.kopol@gmail.com'}`} className="hover:text-white transition-colors">
+                  {settings.supportEmail || 'tajmilur.kopol@gmail.com'}
                 </a>
               </div>
             </div>
@@ -147,7 +151,7 @@ export const Footer: React.FC<FooterProps> = ({
             </ul>
           </div>
 
-          {/* Col 4: Enterprise IT Services */}
+          {/* Col 4: Enterprise IT Services & Admin Portal */}
           <div>
             <h4 className="text-xs font-mono uppercase tracking-wider text-white mb-4">
               {t.footerServices}
@@ -185,20 +189,32 @@ export const Footer: React.FC<FooterProps> = ({
                   Cloud Server & Cyber SLA
                 </button>
               </li>
-              <li>
+              <li className="pt-2">
                 <button
-                  onClick={() => onNavigateSection('services')}
-                  className="hover:text-white transition-colors"
+                  onClick={onOpenAdmin}
+                  className="flex items-center gap-1.5 text-slate-400 hover:text-white text-[11px] font-mono transition-colors"
                 >
-                  Corporate IT Support
+                  <Lock className="w-3.5 h-3.5 text-blue-400" />
+                  <span>Admin & CMS Portal</span>
                 </button>
               </li>
             </ul>
           </div>
         </div>
 
+        {/* Legal & Trademark Notice */}
+        <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-900 mb-8 text-[11px] text-slate-400 leading-relaxed">
+          <p className="font-semibold text-slate-400 mb-1">
+            LEGAL DISCLAIMER & TRADEMARK ATTRIBUTION:
+          </p>
+          <p>
+            {settings.legalDisclaimer ||
+              'Product names, logos, brands, and other trademarks featured or referred to within the TECH NEST BD platform are the property of their respective trademark holders. These trademark holders are not affiliated with TECH NEST BD, our products, or our website. TECH NEST BD operates as an independent digital tools marketplace and IT consultancy in Bangladesh.'}
+          </p>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-400">
+        <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-400">
           <p>{t.copyright}</p>
           <div className="flex items-center gap-4 text-[11px]">
             <span>Privacy Policy</span>
