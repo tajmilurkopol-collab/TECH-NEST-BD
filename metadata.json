@@ -1,0 +1,6 @@
+{
+  "name": "Kyrops Digital - Bangladesh Digital Tools & Technology Marketplace",
+  "description": "Premium Bangladesh-focused marketplace for AI subscriptions, creative software, business applications, industry ERP, developer tools, and IT solutions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
