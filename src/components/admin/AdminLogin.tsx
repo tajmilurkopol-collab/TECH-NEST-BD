@@ -3,6 +3,7 @@ import { Lock, Mail, ShieldAlert, ArrowLeft, KeyRound, CheckCircle, ShieldCheck 
 import { TechNestLogo } from '../TechNestLogo';
 import { storageService } from '../../utils/storageService';
 import { User, UserRole } from '../../types';
+import cosmicPurpleBg from '../../assets/cosmic-purple-bg.jpg';
 
 interface AdminLoginProps {
   onLoginSuccess: (user: User) => void;
@@ -46,9 +47,15 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
-      {/* Background radial glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 blur-[140px] pointer-events-none rounded-full" />
+    <div className="min-h-screen text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
+      {/* Background Cosmic Purple */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <img
+          src={cosmicPurpleBg}
+          alt="Background"
+          className="w-full h-full object-cover object-center"
+        />
+      </div>
 
       {/* Back to store navigation */}
       <div className="absolute top-6 left-6 z-20">

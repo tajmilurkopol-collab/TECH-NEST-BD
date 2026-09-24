@@ -73,7 +73,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-[#070F1E] border-l border-slate-800 p-6 flex flex-col justify-between shadow-2xl">
+        <div className="w-screen max-w-md bg-[#1e3533] border-l border-white/10 p-6 flex flex-col justify-between shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-800 pb-4">
             <div className="flex items-center gap-2">

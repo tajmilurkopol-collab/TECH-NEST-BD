@@ -87,7 +87,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#050B16] text-slate-100 pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent text-slate-100 pt-24 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between gap-4 mb-8">

@@ -38,7 +38,7 @@ export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({
       </div>
 
       {/* Mobile Sticky CTA Bar (compliant with 15% viewport height rule - single line, height 56px) */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070F1E]/95 backdrop-blur-md border-t border-slate-800 px-4 py-2.5 flex items-center justify-between gap-2.5 h-14">
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#1e3533]/95 backdrop-blur-md border-t border-white/10 px-4 py-2.5 flex items-center justify-between gap-2.5 h-14">
         <button
           onClick={handleDirectWhatsApp}
           className="flex-1 py-2 px-3 bg-[#25D366] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm"

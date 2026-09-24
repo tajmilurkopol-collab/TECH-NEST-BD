@@ -20,7 +20,7 @@ export const Footer: React.FC<FooterProps> = ({
   const settings = storageService.getSettings();
 
   return (
-    <footer className="bg-[#030712] border-t border-slate-900 text-slate-400 text-xs">
+    <footer className="bg-transparent border-t border-white/10 text-slate-300 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Col 1: Brand Info */}
@@ -203,8 +203,8 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Legal & Trademark Notice */}
-        <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-900 mb-8 text-[11px] text-slate-400 leading-relaxed">
-          <p className="font-semibold text-slate-400 mb-1">
+        <div className="p-4 rounded-2xl bg-slate-950/80 border border-white/10 mb-8 text-[11px] text-slate-300 leading-relaxed">
+          <p className="font-semibold text-emerald-300 mb-1">
             LEGAL DISCLAIMER & TRADEMARK ATTRIBUTION:
           </p>
           <p>
@@ -214,7 +214,7 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-400">
+        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-400">
           <p>{t.copyright}</p>
           <div className="flex items-center gap-4 text-[11px]">
             <span>Privacy Policy</span>

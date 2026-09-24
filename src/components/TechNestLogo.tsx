@@ -127,7 +127,7 @@ export const TechNestLogo: React.FC<TechNestLogoProps> = ({
           </g>
 
           {/* Central Nest Void */}
-          <circle cx="50" cy="52" r="13" fill="#050B16" />
+          <circle cx="50" cy="52" r="13" fill="#070c18" />
         </svg>
       </div>
 

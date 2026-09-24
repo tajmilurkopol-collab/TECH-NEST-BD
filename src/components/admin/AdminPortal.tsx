@@ -107,7 +107,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   };
 
   return (
-    <div className="flex h-screen bg-[#030712] text-slate-100 font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#040814] text-slate-100 font-sans overflow-hidden">
       {/* Sidebar */}
       <AdminSidebar
         currentTab={currentTab}
@@ -134,7 +134,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         />
 
         {/* Scrollable Viewport */}
-        <main className="flex-1 overflow-y-auto bg-[#040814] pb-16">
+        <main className="flex-1 overflow-y-auto bg-[#070e1c] pb-16">
           {/* PRODUCT EDITOR OVERLAY (When editing or adding) */}
           {(editingProduct || isAddingNewProduct) && (
             <AdminProductEditor

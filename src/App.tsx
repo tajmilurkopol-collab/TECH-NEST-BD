@@ -18,6 +18,7 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { SearchModal } from './components/SearchModal';
 import { ConsultationModal } from './components/ConsultationModal';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
+import cosmicPurpleBg from './assets/cosmic-purple-bg.jpg';
 
 // Admin CMS imports
 import { AdminLogin } from './components/admin/AdminLogin';
@@ -318,37 +319,48 @@ export function App() {
   // ==========================================
   if (viewMode === 'product-detail' && dedicatedProduct) {
     return (
-      <div className={`min-h-screen bg-[#050B16] text-slate-100 flex flex-col font-sans ${language === 'bn' ? 'font-bn' : ''}`}>
-        <Navbar
-          language={language}
-          onLanguageChange={setLanguage}
-          cartCount={totalCartUnits}
-          onOpenCart={() => setIsCartOpen(true)}
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onOpenAdmin={handleOpenAdminFromUI}
-          onNavigateSection={handleNavigateSection}
-        />
-
-        <main className="flex-1">
-          <ProductDetailPage
-            product={dedicatedProduct}
-            language={language}
-            onBack={handleReturnToStorefront}
-            onAddToCart={(prod, plan) => handleAddToCart(prod, plan)}
-            onSelectProduct={(prod: Product) => {
-              setDedicatedProduct(prod);
-              window.history.pushState({}, '', `/product/${prod.slug || prod.id}`);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onSelectBundle={handleSelectBundle}
+      <div className={`min-h-screen text-slate-100 flex flex-col font-sans relative ${language === 'bn' ? 'font-bn' : ''}`}>
+        {/* Cosmic Purple Nebula Background */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          <img
+            src={cosmicPurpleBg}
+            alt="Cosmic Nebula Background"
+            className="w-full h-full object-cover object-center"
           />
-        </main>
+        </div>
 
-        <Footer
-          language={language}
-          onNavigateSection={handleNavigateSection}
-          onOpenAdmin={handleOpenAdminFromUI}
-        />
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <Navbar
+            language={language}
+            onLanguageChange={setLanguage}
+            cartCount={totalCartUnits}
+            onOpenCart={() => setIsCartOpen(true)}
+            onOpenSearch={() => setIsSearchOpen(true)}
+            onOpenAdmin={handleOpenAdminFromUI}
+            onNavigateSection={handleNavigateSection}
+          />
+
+          <main className="flex-1">
+            <ProductDetailPage
+              product={dedicatedProduct}
+              language={language}
+              onBack={handleReturnToStorefront}
+              onAddToCart={(prod, plan) => handleAddToCart(prod, plan)}
+              onSelectProduct={(prod: Product) => {
+                setDedicatedProduct(prod);
+                window.history.pushState({}, '', `/product/${prod.slug || prod.id}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onSelectBundle={handleSelectBundle}
+            />
+          </main>
+
+          <Footer
+            language={language}
+            onNavigateSection={handleNavigateSection}
+            onOpenAdmin={handleOpenAdminFromUI}
+          />
+        </div>
 
         <CartDrawer
           isOpen={isCartOpen}
@@ -376,27 +388,38 @@ export function App() {
   // VIEW: PUBLIC STOREFRONT
   // ==========================================
   return (
-    <div className={`min-h-screen bg-[#050B16] text-slate-100 flex flex-col font-sans ${language === 'bn' ? 'font-bn' : ''}`}>
+    <div className={`min-h-screen bg-[#0c0926] text-slate-100 flex flex-col font-sans relative ${language === 'bn' ? 'font-bn' : ''}`}>
+      {/* Fixed Cosmic Purple Nebula Background for the entire page (Hero covers it with its own image) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <img
+          src={cosmicPurpleBg}
+          alt="Cosmic Purple Nebula"
+          className="w-full h-full object-cover object-top sm:object-center"
+        />
+      </div>
+
       {/* Top Global Announcement Banner if enabled in Settings */}
-      {settings.announcementActive && settings.announcementBanner && (
-        <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-700 text-white py-1.5 px-4 text-center text-xs font-semibold tracking-wide border-b border-blue-600/40">
-          <span>{settings.announcementBanner}</span>
-        </div>
-      )}
+      <div className="relative z-20">
+        {settings.announcementActive && settings.announcementBanner && (
+          <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-700 text-white py-1.5 px-4 text-center text-xs font-semibold tracking-wide border-b border-blue-600/40">
+            <span>{settings.announcementBanner}</span>
+          </div>
+        )}
 
-      {/* 3-Zone Top Bar */}
-      <Navbar
-        language={language}
-        onLanguageChange={setLanguage}
-        cartCount={totalCartUnits}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenAdmin={handleOpenAdminFromUI}
-        onNavigateSection={handleNavigateSection}
-      />
+        {/* 3-Zone Top Bar */}
+        <Navbar
+          language={language}
+          onLanguageChange={setLanguage}
+          cartCount={totalCartUnits}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenAdmin={handleOpenAdminFromUI}
+          onNavigateSection={handleNavigateSection}
+        />
+      </div>
 
-      <main className="flex-1 pb-16 sm:pb-0">
-        {/* Dynamic Interactive Hero with Cursor-Floating Cards */}
+      <main className="flex-1 pb-16 sm:pb-0 relative z-10">
+        {/* Dynamic Interactive Hero with Cursor-Floating Cards - Has its own custom background as it is */}
         <Hero
           language={language}
           onExploreClick={() => handleNavigateSection('marketplace')}
@@ -405,72 +428,75 @@ export function App() {
           featuredProducts={productsList}
         />
 
-        {/* Continuous Trust Marquee */}
-        <TrustMarquee language={language} />
+        {/* Cosmic Purple Nebula Sections Layer (All sections except Hero) */}
+        <div className="relative z-10">
+          {/* Continuous Trust Marquee */}
+          <TrustMarquee language={language} />
 
-        {/* Brand Appart-inspired Editorial Feature */}
-        <BrandAppartEditorial
-          language={language}
-          onExploreSection={(catId) => handleCategorySelection(catId as any)}
-        />
+            {/* Brand Appart-inspired Editorial Feature */}
+            <BrandAppartEditorial
+              language={language}
+              onExploreSection={(catId) => handleCategorySelection(catId as any)}
+            />
 
-        {/* "WHAT DO YOU NEED TODAY?" Category Explorer */}
-        <CategoryExplorer
-          categories={categoriesList}
-          language={language}
-          onSelectCategory={(catId) => handleCategorySelection(catId)}
-        />
+            {/* "WHAT DO YOU NEED TODAY?" Category Explorer */}
+            <CategoryExplorer
+              categories={categoriesList}
+              language={language}
+              onSelectCategory={(catId) => handleCategorySelection(catId)}
+            />
 
-        {/* "TRENDING DIGITAL TOOLS" Product Marketplace */}
-        <Marketplace
-          products={productsList}
-          language={language}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          onSelectProduct={(product) => setSelectedProduct(product)}
-          onAddToCart={(product) => handleAddToCart(product)}
-          onOpenDedicatedPage={handleOpenDedicatedProductPage}
-        />
+            {/* "TRENDING DIGITAL TOOLS" Product Marketplace */}
+            <Marketplace
+              products={productsList}
+              language={language}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              onSelectProduct={(product) => setSelectedProduct(product)}
+              onAddToCart={(product) => handleAddToCart(product)}
+              onOpenDedicatedPage={handleOpenDedicatedProductPage}
+            />
 
-        {/* Industry Solutions (Construction, Garments, Poultry, Real Estate) */}
-        <IndustryShowcase
-          industries={industriesList}
-          language={language}
-          onOpenConsultationModal={handleOpenConsultation}
-        />
+            {/* Industry Solutions (Construction, Garments, Poultry, Real Estate) */}
+            <IndustryShowcase
+              industries={industriesList}
+              language={language}
+              onOpenConsultationModal={handleOpenConsultation}
+            />
 
-        {/* Interactive "BUILD YOUR DIGITAL STACK" 3-step recommendation tool */}
-        <StackBuilder
-          products={productsList}
-          language={language}
-          onAddStackToCart={handleAddStackToCart}
-          onSelectProduct={(product) => setSelectedProduct(product)}
-        />
+            {/* Interactive "BUILD YOUR DIGITAL STACK" 3-step recommendation tool */}
+            <StackBuilder
+              products={productsList}
+              language={language}
+              onAddStackToCart={handleAddStackToCart}
+              onSelectProduct={(product) => setSelectedProduct(product)}
+            />
 
-        {/* "BUILT FOR THE WAY YOU WORK" Bundles & Single vs Bundle Advantage */}
-        <BundleMarketplace
-          bundles={bundlesList}
-          language={language}
-          onSelectBundle={handleSelectBundle}
-        />
+            {/* "BUILT FOR THE WAY YOU WORK" Bundles & Single vs Bundle Advantage */}
+            <BundleMarketplace
+              bundles={bundlesList}
+              language={language}
+              onSelectBundle={handleSelectBundle}
+            />
 
-        {/* Enterprise IT Services & Solutions */}
-        <ITServices
-          services={servicesList}
-          language={language}
-          onConsultationRequest={handleServiceConsultation}
-        />
+            {/* Enterprise IT Services & Solutions */}
+            <ITServices
+              services={servicesList}
+              language={language}
+              onConsultationRequest={handleServiceConsultation}
+            />
 
-        {/* How It Works & Why Us */}
-        <HowItWorks language={language} />
+            {/* How It Works & Why Us */}
+            <HowItWorks language={language} />
+
+            {/* Enterprise Footer with Legal & Trademark Notice */}
+            <Footer
+              language={language}
+              onNavigateSection={handleNavigateSection}
+              onOpenAdmin={handleOpenAdminFromUI}
+            />
+          </div>
       </main>
-
-      {/* Enterprise Footer with Legal & Trademark Notice */}
-      <Footer
-        language={language}
-        onNavigateSection={handleNavigateSection}
-        onOpenAdmin={handleOpenAdminFromUI}
-      />
 
       {/* Floating WhatsApp Action and Mobile Sticky Bar */}
       <WhatsAppFloatingButton

@@ -69,7 +69,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ language }) => {
   ];
 
   return (
-    <section className="py-24 bg-[#030712] border-b border-slate-900">
+    <section className="py-24 bg-transparent border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section 1: How it Works */}
         <div className="mb-24">

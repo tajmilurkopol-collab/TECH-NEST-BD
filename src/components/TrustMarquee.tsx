@@ -22,7 +22,7 @@ export const TrustMarquee: React.FC<TrustMarqueeProps> = ({ language }) => {
   ];
 
   return (
-    <div className="bg-[#040812] border-y border-slate-900 overflow-hidden py-4 select-none">
+    <div className="bg-transparent border-y border-white/10 overflow-hidden py-4 select-none">
       <div className="flex animate-marquee whitespace-nowrap">
         {[...marqueeItems, ...marqueeItems].map((item, index) => {
           const Icon = item.icon;

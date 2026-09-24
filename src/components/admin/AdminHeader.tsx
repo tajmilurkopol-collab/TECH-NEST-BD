@@ -62,7 +62,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   };
 
   return (
-    <header className="h-16 bg-[#050B16] border-b border-slate-800/90 px-6 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-16 bg-[#050b16] border-b border-white/10 px-6 flex items-center justify-between sticky top-0 z-30">
       {/* Title & Breadcrumb */}
       <div>
         <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 uppercase">

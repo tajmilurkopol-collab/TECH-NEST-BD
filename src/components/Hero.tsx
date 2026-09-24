@@ -3,6 +3,7 @@ import { ArrowRight, Sparkles, Layers, ShieldCheck, Zap, Terminal, Building2, Ex
 import { Language, Product } from '../types';
 import { translations } from '../data/i18n';
 import { formatBDT } from '../utils/helpers';
+import heroImage from '../assets/hero-blue-orb.jpg';
 
 interface HeroProps {
   language: Language;
@@ -96,12 +97,17 @@ export const Hero: React.FC<HeroProps> = ({
   return (
     <section
       onMouseMove={handleMouseMove}
-      className="relative overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-28 bg-[#050B16] border-b border-slate-900"
+      className="relative z-10 overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-28 bg-[#020b18] border-b border-white/10"
     >
-      {/* Subtle background ambient mesh */}
-      <div className="absolute inset-0 pointer-events-none opacity-40">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-gradient-to-tr from-blue-700/20 via-indigo-600/15 to-violet-800/20 blur-[130px] rounded-full" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-emerald-600/10 blur-[100px] rounded-full" />
+      {/* Background Image: Just in Hero section as requested "as it is" */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <img
+          src={heroImage}
+          alt="Digital Marketing, Website Development, Software Development"
+          className="w-full h-full object-cover object-center"
+        />
+        {/* Soft edge blend at the top and bottom so it fits cleanly with navbar and next section, leaving the central orb and hand intact as it is */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#020b18]/60 via-transparent to-[#020b18]/70" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

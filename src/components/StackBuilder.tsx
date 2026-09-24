@@ -156,7 +156,7 @@ export const StackBuilder: React.FC<StackBuilderProps> = ({
   };
 
   return (
-    <section id="stack-builder" className="py-24 bg-[#050B16] border-b border-slate-900 relative">
+    <section id="stack-builder" className="py-24 bg-transparent border-b border-white/10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">

@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#050B16]/95 backdrop-blur-md border-b border-slate-800/80 transition-all">
+    <header className="sticky top-0 z-40 bg-[#040814]/85 backdrop-blur-md border-b border-white/10 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Zone 1: Wordmark & Official Falcon Logo from Image 2 */}
         <div className="flex items-center gap-3 shrink-0">
@@ -170,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#071120] border-b border-slate-800 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="lg:hidden bg-[#070e1c]/95 border-b border-white/10 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="grid grid-cols-2 gap-2 text-sm">
             <button
               onClick={() => handleNavClick('marketplace')}

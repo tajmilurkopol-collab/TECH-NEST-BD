@@ -46,7 +46,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/80 backdrop-blur-sm">
       <div
-        className="relative w-full max-w-2xl bg-[#070F1E] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-2xl bg-[#1e3533] border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center px-4 py-3.5 border-b border-slate-800">

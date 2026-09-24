@@ -128,7 +128,7 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
   };
 
   return (
-    <section id="marketplace" className="py-20 bg-[#050B16] border-b border-slate-900">
+    <section id="marketplace" className="py-20 bg-transparent border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
