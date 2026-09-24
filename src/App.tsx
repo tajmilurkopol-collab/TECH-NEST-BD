@@ -398,8 +398,8 @@ export function App() {
         />
       </div>
 
-      {/* Top Global Announcement Banner if enabled in Settings */}
-      <div className="relative z-20">
+      {/* Fixed Sticky Top Global Bar (Announcement + 3-Zone Navbar) - Remains pinned at the top as customer scrolls */}
+      <div className="sticky top-0 z-50 w-full shadow-2xl shadow-black/50 backdrop-blur-xl">
         {settings.announcementActive && settings.announcementBanner && (
           <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-700 text-white py-1.5 px-4 text-center text-xs font-semibold tracking-wide border-b border-blue-600/40">
             <span>{settings.announcementBanner}</span>

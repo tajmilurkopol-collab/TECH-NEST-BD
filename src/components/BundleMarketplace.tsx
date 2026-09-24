@@ -30,7 +30,7 @@ export const BundleMarketplace: React.FC<BundleMarketplaceProps> = ({
 
   return (
     <section id="bundles" className="py-24 bg-transparent border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Section Heading */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4">
           <div>
@@ -47,7 +47,7 @@ export const BundleMarketplace: React.FC<BundleMarketplaceProps> = ({
         </div>
 
         {/* Bundle Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 mb-16">
           {bundles.map((bundle) => {
             const isSelected = activeBundleId === bundle.id;
 

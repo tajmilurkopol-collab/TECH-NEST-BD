@@ -70,10 +70,10 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ language }) => {
 
   return (
     <section className="py-24 bg-transparent border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Section 1: How it Works */}
         <div className="mb-24">
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-4xl mx-auto mb-16">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-400 mb-2 block">
               Transparent Operations
             </span>

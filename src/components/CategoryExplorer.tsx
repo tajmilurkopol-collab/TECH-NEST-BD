@@ -29,7 +29,7 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
 
   return (
     <section id="categories" className="py-20 bg-transparent border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
             <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-2 block">
@@ -44,7 +44,7 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-8 gap-5">
           {categories.map((cat) => {
             const Icon = iconMap[cat.icon] || Sparkles;
             return (

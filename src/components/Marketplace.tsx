@@ -129,7 +129,7 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
 
   return (
     <section id="marketplace" className="py-20 bg-transparent border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
@@ -244,7 +244,7 @@ export const Marketplace: React.FC<MarketplaceProps> = ({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
             {filteredProducts.map((product) => {
               const isFeatured = product.isFeatured;
               const hasBadge = !!product.badge;

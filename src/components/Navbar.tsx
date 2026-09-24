@@ -32,9 +32,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#040814]/85 backdrop-blur-md border-b border-white/10 transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-        {/* Zone 1: Wordmark & Official Falcon Logo from Image 2 */}
+    <header className="w-full bg-[#0a0624]/95 backdrop-blur-xl border-b border-purple-500/20 shadow-xl transition-all">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 h-20 flex items-center justify-between gap-4">
+        {/* Zone 1: Wordmark & Official Falcon Logo */}
         <div className="flex items-center gap-3 shrink-0">
           <a
             href="#"
@@ -43,13 +43,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="group transition-transform hover:scale-102"
+            title="Scroll to Top / উপরে যান"
           >
             <TechNestLogo size="md" showTagline={true} />
           </a>
         </div>
 
         {/* Zone 2: Navigation links */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium text-slate-300">
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-slate-300">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="hover:text-white transition-colors cursor-pointer whitespace-nowrap text-slate-400 hover:text-white"
+          >
+            {language === 'bn' ? 'হোম / উপরে' : 'Home'}
+          </button>
           <button
             onClick={() => handleNavClick('marketplace')}
             className="hover:text-white transition-colors cursor-pointer whitespace-nowrap"
@@ -170,8 +177,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#070e1c]/95 border-b border-white/10 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="lg:hidden bg-[#0a0624]/98 border-b border-purple-500/20 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="grid grid-cols-2 gap-2 text-sm">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="p-2.5 bg-blue-900/40 border border-blue-700/50 rounded-lg text-left text-blue-300 font-semibold hover:bg-blue-800/50 transition col-span-2 flex items-center justify-between"
+            >
+              <span>{language === 'bn' ? 'হোম / উপরে যান' : 'Home / Scroll to Top'}</span>
+              <span>↑</span>
+            </button>
             <button
               onClick={() => handleNavClick('marketplace')}
               className="p-2.5 bg-slate-900/80 rounded-lg text-left text-slate-200 hover:bg-slate-800 transition"

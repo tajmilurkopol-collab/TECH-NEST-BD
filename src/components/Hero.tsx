@@ -110,7 +110,7 @@ export const Hero: React.FC<HeroProps> = ({
         <div className="absolute inset-0 bg-gradient-to-b from-[#020b18]/60 via-transparent to-[#020b18]/70" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         {/* Brand Appart-style Live Desk Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-8 text-xs text-slate-400 border-b border-slate-800/60 pb-3">
           <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
         {/* Central Hero Block */}
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs text-blue-400 mb-6 font-medium shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-blue-400" />

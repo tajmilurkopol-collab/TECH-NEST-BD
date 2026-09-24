@@ -35,9 +35,9 @@ export const ITServices: React.FC<ITServicesProps> = ({
 
   return (
     <section id="services" className="py-24 bg-transparent border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Section Heading */}
-        <div className="max-w-3xl mb-16">
+        <div className="max-w-4xl mb-16">
           <span className="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-2 block">
             Enterprise Technology & Implementation
           </span>
