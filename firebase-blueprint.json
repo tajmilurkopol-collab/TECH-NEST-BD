@@ -1,0 +1,314 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "System administrator mapping by Firebase Auth UID",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth user identifier",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "description": "Admin email address",
+          "maxLength": 256
+        },
+        "role": {
+          "type": "string",
+          "description": "Role designation",
+          "enum": ["Super Admin", "Product Manager", "Order Operations", "Admin"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Registered customer or administrator profile",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "User UID",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "description": "Account email address",
+          "maxLength": 256
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display or company name",
+          "maxLength": 120
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Avatar URL",
+          "maxLength": 512
+        },
+        "role": {
+          "type": "string",
+          "description": "Access tier role",
+          "enum": ["customer", "admin", "manager"]
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Contact or WhatsApp phone number",
+          "maxLength": 30
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Registration timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Digital tool, software license, or ERP subscription in the catalogue",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Product unique slug ID",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Product display title",
+          "maxLength": 120
+        },
+        "nameBn": {
+          "type": "string",
+          "description": "Bengali title",
+          "maxLength": 150
+        },
+        "brand": {
+          "type": "string",
+          "description": "Software developer or brand",
+          "maxLength": 80
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary category identifier",
+          "maxLength": 60
+        },
+        "subcategory": {
+          "type": "string",
+          "description": "Subcategory name",
+          "maxLength": 80
+        },
+        "marketPrice": {
+          "type": "number",
+          "description": "Observed market price in BDT"
+        },
+        "retailPrice": {
+          "type": "number",
+          "description": "Official retail or strike price in BDT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Summary product description",
+          "maxLength": 2000
+        },
+        "status": {
+          "type": "string",
+          "description": "Publication status",
+          "enum": ["published", "draft", "coming_soon"]
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "name", "category", "marketPrice"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase or subscription activation order",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order reference number",
+          "maxLength": 64
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of customer if signed in",
+          "maxLength": 128
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Full name of customer",
+          "maxLength": 120
+        },
+        "customerEmail": {
+          "type": "string",
+          "description": "Email address for credential delivery",
+          "maxLength": 256
+        },
+        "customerPhone": {
+          "type": "string",
+          "description": "WhatsApp or mobile contact number",
+          "maxLength": 30
+        },
+        "customerCompany": {
+          "type": "string",
+          "description": "Company name if corporate",
+          "maxLength": 150
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Subtotal before discount in BDT"
+        },
+        "discount": {
+          "type": "number",
+          "description": "Discount in BDT"
+        },
+        "total": {
+          "type": "number",
+          "description": "Total amount due in BDT"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Selected local payment channel",
+          "enum": ["bkash", "nagad", "rocket", "bank", "card", "whatsapp"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Order fulfillment status",
+          "enum": ["pending", "processing", "active", "completed", "cancelled"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "customerName", "customerEmail", "customerPhone", "total", "status"]
+    },
+    "ConsultationRequest": {
+      "title": "ConsultationRequest",
+      "description": "Customer request for enterprise IT or industry ERP discovery call",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique consultation ID",
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "Requester name",
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number",
+          "maxLength": 30
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address",
+          "maxLength": 256
+        },
+        "industryId": {
+          "type": "string",
+          "description": "Industry or service identifier",
+          "maxLength": 60
+        },
+        "status": {
+          "type": "string",
+          "description": "Inquiry status",
+          "enum": ["new", "contacted", "in_progress", "closed"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["id", "name", "phone", "industryId"]
+    },
+    "SiteSettingsDoc": {
+      "title": "SiteSettingsDoc",
+      "description": "Global website configuration, hotline, and announcement banner",
+      "type": "object",
+      "properties": {
+        "siteTitle": {
+          "type": "string",
+          "description": "Brand site title",
+          "maxLength": 200
+        },
+        "announcementBanner": {
+          "type": "string",
+          "description": "Top announcement marquee text",
+          "maxLength": 500
+        },
+        "announcementActive": {
+          "type": "boolean",
+          "description": "Whether announcement bar is enabled"
+        },
+        "supportPhone": {
+          "type": "string",
+          "description": "Official support phone number",
+          "maxLength": 30
+        },
+        "supportEmail": {
+          "type": "string",
+          "description": "Official support email address",
+          "maxLength": 256
+        },
+        "officeAddress": {
+          "type": "string",
+          "description": "Physical headquarters address",
+          "maxLength": 300
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last updated timestamp"
+        }
+      },
+      "required": ["siteTitle", "supportPhone"]
+    }
+  },
+  "firestore": {
+    "/admins/{uid}": {
+      "schema": "Admin",
+      "description": "Authoritative list of administrator UIDs"
+    },
+    "/users/{uid}": {
+      "schema": "UserProfile",
+      "description": "User profiles with private information protected"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Real-time synchronised digital tools catalog"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer purchase orders and subscription records"
+    },
+    "/consultations/{consultationId}": {
+      "schema": "ConsultationRequest",
+      "description": "Inbound discovery consultation requests"
+    },
+    "/site_settings/{docId}": {
+      "schema": "SiteSettingsDoc",
+      "description": "Global operational configuration for the website"
+    }
+  }
+}

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, ShieldCheck, MessageSquare, AlertCircle, Copy, Check } from 'lucide-react';
-import { CartItem, Language } from '../types';
+import { CartItem, Language, Order, User } from '../types';
 import { translations } from '../data/i18n';
 import { formatBDT, generateWhatsAppLink } from '../utils/helpers';
+import { firebaseDbService } from '../services/firebaseDbService';
+import { storageService } from '../utils/storageService';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -10,6 +12,7 @@ interface CheckoutModalProps {
   cartItems: CartItem[];
   language: Language;
   onOrderSuccess: () => void;
+  currentUser?: User | null;
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
@@ -18,17 +21,25 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cartItems,
   language,
   onOrderSuccess,
+  currentUser,
 }) => {
   const t = translations[language];
 
-  const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerName, setCustomerName] = useState(currentUser?.name || '');
+  const [customerEmail, setCustomerEmail] = useState(currentUser?.email || '');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerCompany, setCustomerCompany] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'nagad' | 'rocket' | 'bank'>('bkash');
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderRef, setOrderRef] = useState('');
   const [copiedNumber, setCopiedNumber] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      if (!customerName && currentUser.name) setCustomerName(currentUser.name);
+      if (!customerEmail && currentUser.email) setCustomerEmail(currentUser.email);
+    }
+  }, [currentUser]);
 
   if (!isOpen) return null;
 
@@ -48,6 +59,43 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
     const ref = `KYR-${Math.floor(10000 + Math.random() * 90000)}`;
     setOrderRef(ref);
+
+    const newOrder: Order = {
+      id: ref,
+      orderNumber: ref,
+      customerName,
+      customerEmail,
+      customerPhone,
+      customerCompany,
+      productNames: cartItems.map((i) => i.product.name),
+      items: cartItems.map((item) => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        planId: item.selectedPlan.id,
+        planName: item.selectedPlan.name,
+        price: getPlanPrice(item),
+        quantity: item.quantity,
+      })),
+      totalAmount: subtotal,
+      discount,
+      netAmount: total,
+      currency: 'BDT',
+      paymentMethod,
+      paymentStatus: 'pending',
+      status: 'pending',
+      orderSource: 'direct_checkout',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Save locally
+    storageService.createOrder(newOrder);
+
+    // Save to Firebase Firestore
+    firebaseDbService.createOrder(newOrder).catch((err) => {
+      console.warn('Firestore order sync:', err);
+    });
+
     setOrderCompleted(true);
     onOrderSuccess();
   };

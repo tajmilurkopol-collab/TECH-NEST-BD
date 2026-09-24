@@ -10,6 +10,7 @@ import { StackBuilder } from './components/StackBuilder';
 import { BundleMarketplace } from './components/BundleMarketplace';
 import { ITServices } from './components/ITServices';
 import { HowItWorks } from './components/HowItWorks';
+import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 import { ProductModal } from './components/ProductModal';
 import { ProductDetailPage } from './components/ProductDetailPage';
@@ -17,8 +18,10 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { SearchModal } from './components/SearchModal';
 import { ConsultationModal } from './components/ConsultationModal';
+import { AuthModal } from './components/AuthModal';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
 import cosmicPurpleBg from './assets/cosmic-purple-bg.jpg';
+import { firebaseDbService } from './services/firebaseDbService';
 
 // Admin CMS imports
 import { AdminLogin } from './components/admin/AdminLogin';
@@ -68,7 +71,33 @@ export function App() {
   // Modals
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
   const [consultationIndustry, setConsultationIndustry] = useState<IndustrySolution | null>(null);
+
+  // Firebase Auth and Firestore Real-time synchronization
+  useEffect(() => {
+    const unsubAuth = firebaseDbService.subscribeAuth((state) => {
+      if (state.user) {
+        setCurrentUser(state.user);
+        setIsAdminUser(state.isAdmin);
+        storageService.setCurrentUser(state.user);
+      }
+    });
+
+    // Real-time Firestore product listener & initial seed if empty
+    firebaseDbService.syncInitialProductsIfEmpty(productsList);
+    const unsubProducts = firebaseDbService.subscribeProducts((firestoreProducts) => {
+      if (firestoreProducts && firestoreProducts.length > 0) {
+        setProductsList(firestoreProducts);
+      }
+    });
+
+    return () => {
+      unsubAuth();
+      unsubProducts();
+    };
+  }, []);
 
   // Initial URL check (e.g. /admin or /product/chatgpt)
   useEffect(() => {
@@ -415,6 +444,8 @@ export function App() {
           onOpenSearch={() => setIsSearchOpen(true)}
           onOpenAdmin={handleOpenAdminFromUI}
           onNavigateSection={handleNavigateSection}
+          currentUser={currentUser}
+          onOpenAuth={() => setIsAuthOpen(true)}
         />
       </div>
 
@@ -489,6 +520,9 @@ export function App() {
             {/* How It Works & Why Us */}
             <HowItWorks language={language} />
 
+            {/* Comprehensive FAQ Accordion Section */}
+            <FAQSection language={language} />
+
             {/* Enterprise Footer with Legal & Trademark Notice */}
             <Footer
               language={language}
@@ -535,6 +569,7 @@ export function App() {
           cartItems={cartItems}
           language={language}
           onOrderSuccess={handleOrderSuccess}
+          currentUser={currentUser}
         />
       )}
 
@@ -556,6 +591,24 @@ export function App() {
           language={language}
         />
       )}
+
+      {/* Firebase Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        language={language}
+        currentUser={currentUser}
+        isAdmin={isAdminUser}
+        onLoginSuccess={(user) => {
+          setCurrentUser(user);
+          storageService.setCurrentUser(user);
+        }}
+        onLogoutSuccess={() => {
+          setCurrentUser(null);
+          storageService.logoutCurrentUser();
+        }}
+        onOpenAdmin={handleOpenAdminFromUI}
+      />
     </div>
   );
 }

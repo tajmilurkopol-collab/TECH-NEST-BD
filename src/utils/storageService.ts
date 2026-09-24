@@ -852,6 +852,15 @@ export const storageService = {
     }
   },
 
+  setCurrentUser(user: User | null): void {
+    if (user) {
+      localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+    }
+    notifySubscribers();
+  },
+
   login(email: string, role?: UserRole): { success: boolean; user?: User; error?: string } {
     const users = this.getUsers();
     const matched = users.find((u) => u.email.toLowerCase() === email.toLowerCase());

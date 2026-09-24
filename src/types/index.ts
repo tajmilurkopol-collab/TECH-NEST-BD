@@ -275,7 +275,8 @@ export type UserRole =
   | 'Content Editor' 
   | 'Order Manager' 
   | 'Support' 
-  | 'Viewer';
+  | 'Viewer'
+  | 'Customer';
 
 export interface User {
   id: string;

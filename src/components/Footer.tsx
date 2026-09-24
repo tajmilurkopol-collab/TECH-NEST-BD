@@ -189,6 +189,14 @@ export const Footer: React.FC<FooterProps> = ({
                   Cloud Server & Cyber SLA
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => onNavigateSection('faq')}
+                  className="text-purple-400 hover:text-purple-300 font-semibold transition-colors"
+                >
+                  FAQ & Delivery Guidance
+                </button>
+              </li>
               <li className="pt-2">
                 <button
                   onClick={onOpenAdmin}

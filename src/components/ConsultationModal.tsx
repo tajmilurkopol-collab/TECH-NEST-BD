@@ -3,6 +3,7 @@ import { X, Calendar, CheckCircle2, MessageSquare, Phone } from 'lucide-react';
 import { IndustrySolution, Language } from '../types';
 import { translations } from '../data/i18n';
 import { generateWhatsAppLink } from '../utils/helpers';
+import { firebaseDbService } from '../services/firebaseDbService';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -28,6 +29,18 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name || !phone) return;
+
+    const consultId = `CNS-${Date.now()}`;
+    firebaseDbService
+      .submitConsultation({
+        id: consultId,
+        name,
+        phone,
+        industryId: industry.id,
+      })
+      .catch((err) => console.warn('Firestore consultation sync:', err));
+
     setSubmitted(true);
   };
 

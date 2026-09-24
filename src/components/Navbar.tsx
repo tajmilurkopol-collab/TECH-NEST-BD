@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Search, ShoppingBag, Menu, X, Shield, Globe } from 'lucide-react';
-import { Language } from '../types';
+import { Search, ShoppingBag, Menu, X, Shield, Globe, User as UserIcon } from 'lucide-react';
+import { Language, User } from '../types';
 import { translations } from '../data/i18n';
 import { TechNestLogo } from './TechNestLogo';
 
@@ -12,6 +12,8 @@ interface NavbarProps {
   onOpenSearch: () => void;
   onOpenAdmin: () => void;
   onNavigateSection: (sectionId: string) => void;
+  currentUser?: User | null;
+  onOpenAuth?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -22,9 +24,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSearch,
   onOpenAdmin,
   onNavigateSection,
+  currentUser,
+  onOpenAuth,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = translations[language];
+  const isBn = language === 'bn';
 
   const handleNavClick = (sectionId: string) => {
     setMobileMenuOpen(false);
@@ -93,6 +98,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             {t.navServices}
           </button>
+          <button
+            onClick={() => handleNavClick('faq')}
+            className="hover:text-white transition-colors cursor-pointer whitespace-nowrap text-purple-400 hover:text-purple-300 font-semibold"
+          >
+            {language === 'bn' ? 'প্রশ্নোত্তর' : 'FAQ'}
+          </button>
         </nav>
 
         {/* Zone 3: Actions */}
@@ -145,6 +156,31 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             )}
           </button>
+
+          {/* User Auth Trigger */}
+          {onOpenAuth && (
+            <button
+              onClick={onOpenAuth}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 rounded-lg transition-colors cursor-pointer"
+              title={currentUser ? currentUser.email : (language === 'bn' ? 'অ্যাকাউন্ট / সাইন ইন' : 'Account / Sign In')}
+            >
+              {currentUser ? (
+                <>
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-purple-600 to-blue-600 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                    {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                  <span className="hidden sm:inline max-w-[80px] truncate text-slate-200">
+                    {currentUser.name?.split(' ')[0]}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <UserIcon className="w-4 h-4 text-purple-400" />
+                  <span className="hidden sm:inline">{language === 'bn' ? 'সাইন ইন' : 'Sign In'}</span>
+                </>
+              )}
+            </button>
+          )}
 
           {/* Admin catalogue inspector button */}
           <button
@@ -225,9 +261,32 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               {t.navServices}
             </button>
+            <button
+              onClick={() => handleNavClick('faq')}
+              className="p-2.5 bg-slate-900/80 rounded-lg text-left text-purple-400 font-medium hover:bg-slate-800 transition"
+            >
+              {language === 'bn' ? 'প্রশ্নোত্তর (FAQ)' : 'FAQ & Guidance'}
+            </button>
           </div>
 
           <div className="pt-2 flex flex-col gap-2">
+            {onOpenAuth && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAuth();
+                }}
+                className="w-full py-2.5 px-4 text-xs font-medium text-white bg-purple-900/60 border border-purple-700/60 rounded-lg flex items-center justify-center gap-2"
+              >
+                <UserIcon className="w-4 h-4 text-purple-300" />
+                <span>
+                  {currentUser
+                    ? `${isBn ? 'প্রোফাইল' : 'Profile'}: ${currentUser.name}`
+                    : (isBn ? 'অ্যাকাউন্টে সাইন ইন করুন' : 'Sign In with Google')}
+                </span>
+              </button>
+            )}
+
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
